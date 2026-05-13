@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teaching Claude to Build | Salesforce Development Skills for SEs</title>
-    <meta name="description" content="Part 4 of the Context Engineering series. The four-layer Salesforce development stack: model training, sf CLI, 65 production skills, and Agent Script. From weeks of manual Agent Builder work to minutes of CLI-driven automation.">
+    <meta name="description" content="Part 5 of the Context Engineering series. The four-layer Salesforce development stack: model training, sf CLI, 65 production skills, and Agent Script. From weeks of manual Agent Builder work to minutes of CLI-driven automation.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -114,7 +114,8 @@
                 <a href="https://jtehrani84.github.io/claude-context-architecture/" class="hover:text-gray-300 transition-colors">Part 1</a>
                 <a href="https://jtehrani84.github.io/context-engineering-agentscript/" class="hover:text-gray-300 transition-colors">Part 2</a>
                 <a href="https://jtehrani84.github.io/context-engineering-mcp/" class="hover:text-gray-300 transition-colors">Part 3</a>
-                <span class="text-blue-400 font-semibold">Part 4</span>
+                <a href="https://jtehrani84.github.io/context-engineering-knowledge-graph/" class="hover:text-gray-300 transition-colors">Part 4</a>
+                <span class="text-blue-400 font-semibold">Part 5</span>
             </div>
         </div>
     </nav>
@@ -123,7 +124,7 @@
     <section class="hero-gradient min-h-[85vh] flex items-center relative overflow-hidden">
         <div class="max-w-6xl mx-auto px-6 py-24 relative z-10">
             <div class="max-w-3xl">
-                <p class="text-purple-400 font-mono text-sm tracking-wider mb-6 fade-up">CONTEXT ENGINEERING SERIES &mdash; PART 4</p>
+                <p class="text-purple-400 font-mono text-sm tracking-wider mb-6 fade-up">CONTEXT ENGINEERING SERIES &mdash; PART 5</p>
                 <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8 fade-up stagger-1">
                     Teaching Claude to <span class="gradient-text">Build</span>
                 </h1>
@@ -694,8 +695,21 @@
                 If you have Claude Code and the Salesforce CLI, you're 60 seconds from the full stack.
             </p>
 
+            <!-- Agentforce Labs callout -->
+            <div class="glass-card rounded-xl p-6 mb-10 border border-emerald-500/20 fade-up stagger-1">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                        <span class="text-emerald-400 text-lg">&#9889;</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-white mb-1">New: Zero-friction option</h3>
+                        <p class="text-sm text-gray-300"><a href="https://labs.agentforce.com" target="_blank" rel="noopener" class="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2">labs.agentforce.com</a> gives you instant headless access to Agentforce from Claude Code, Codex, Cursor, or Vibes &mdash; no org provisioning, no setup screens. Connect and start building in minutes.</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="glass-card rounded-xl p-6 fade-up stagger-1">
+                <div class="glass-card rounded-xl p-6 fade-up stagger-2">
                     <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4">
                         <span class="text-lg font-bold text-blue-400">1</span>
                     </div>
@@ -729,13 +743,31 @@
         </div>
     </section>
 
+    <!-- Internal callout -->
+    <section class="py-12 px-6">
+        <div class="max-w-3xl mx-auto">
+            <div class="glass-card rounded-xl p-6 border border-blue-500/20 fade-up">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-blue-400 text-sm">&#9432;</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            <span class="font-semibold text-white">Salesforce colleagues:</span> there's an internal Slack canvas with the full toolkit &mdash; Agentforce Labs access, ADLC plugin, ADL Data Libraries, Custom Scorers, and Custom Connections skills. Search <span class="font-mono text-xs text-blue-300">"Build Fast with Coding Agents"</span> in Slack or ask your CKO channel.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Series -->
     <section class="py-24 px-6 bg-slate-800/30">
         <div class="max-w-6xl mx-auto">
             <div class="text-xs font-semibold tracking-widest text-blue-400/70 uppercase mb-4 fade-up">The Series</div>
             <h2 class="text-3xl md:text-4xl font-bold mb-12 fade-up stagger-1">Context Engineering for SEs</h2>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <a href="https://jtehrani84.github.io/claude-context-architecture/" target="_blank" rel="noopener"
                    class="glass-card rounded-xl p-5 hover:border-blue-500/30 transition-all duration-200 fade-up stagger-1 group">
                     <div class="text-xs text-gray-500 mb-2">Part 1</div>
@@ -757,8 +789,15 @@
                     <p class="text-xs text-gray-500">Connecting to your systems</p>
                     <div class="mt-3 text-xs text-emerald-400">Complete &rarr;</div>
                 </a>
-                <div class="glass-card rounded-xl p-5 border-2 border-purple-500/30 fade-up stagger-4">
-                    <div class="text-xs text-purple-400 mb-2">Part 4</div>
+                <a href="https://jtehrani84.github.io/context-engineering-knowledge-graph/" target="_blank" rel="noopener"
+                   class="glass-card rounded-xl p-5 hover:border-blue-500/30 transition-all duration-200 fade-up stagger-4 group">
+                    <div class="text-xs text-gray-500 mb-2">Part 4</div>
+                    <h3 class="font-semibold text-gray-300 group-hover:text-white transition-colors text-sm mb-1">Knowledge Graph</h3>
+                    <p class="text-xs text-gray-500">Thinking in graphs</p>
+                    <div class="mt-3 text-xs text-emerald-400">Complete &rarr;</div>
+                </a>
+                <div class="glass-card rounded-xl p-5 border-2 border-purple-500/30 fade-up stagger-5">
+                    <div class="text-xs text-purple-400 mb-2">Part 5</div>
                     <h3 class="font-semibold text-white text-sm mb-1">Skills</h3>
                     <p class="text-xs text-gray-400">The Salesforce development stack</p>
                     <div class="mt-3 text-xs text-purple-400">You are here</div>
@@ -771,13 +810,14 @@
     <footer class="border-t border-slate-700/50 py-12 px-6">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-                <p class="text-gray-400 text-sm">Context Engineering Series &mdash; Part 4</p>
+                <p class="text-gray-400 text-sm">Context Engineering Series &mdash; Part 5</p>
                 <p class="text-gray-500 text-xs mt-1">Built by John Tehrani &middot; Principal Solutions Engineer, Salesforce</p>
             </div>
             <div class="flex items-center gap-6 text-sm text-gray-500">
                 <a href="https://jtehrani84.github.io/claude-context-architecture/" class="hover:text-gray-300 transition-colors">Part 1</a>
                 <a href="https://jtehrani84.github.io/context-engineering-agentscript/" class="hover:text-gray-300 transition-colors">Part 2</a>
                 <a href="https://jtehrani84.github.io/context-engineering-mcp/" class="hover:text-gray-300 transition-colors">Part 3</a>
+                <a href="https://jtehrani84.github.io/context-engineering-knowledge-graph/" class="hover:text-gray-300 transition-colors">Part 4</a>
             </div>
         </div>
     </footer>
