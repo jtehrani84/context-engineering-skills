@@ -6,6 +6,8 @@
 
 :hammer_and_wrench: **Context Engineering Part 5 — Teaching Claude to Build Agentforce Agents** :hammer_and_wrench:
 
+Fresh off CKO2 — Ryan Schellack's session nailed it: the fast path to Agentforce adoption starts with coding agents. Claude Code + Agent Script + ADLC Skills = scaffold, prove, iterate on the spot. This post is the deep dive on exactly how that works in practice, what breaks, and what the iteration loop actually looks like.
+
 Part 1 gave Claude memory. Part 2 showed what happens without it. Part 3 connected it to CRM, Slack, and GitHub. Part 4 added a knowledge graph. This one teaches it how to build Salesforce — and proves it with a real agent build.
 
 **The problem:** Claude knows Apex and Flows from training data. But Agent Script — the language for authoring Agentforce agents — launched with zero training data in any model. Without the right context, Claude produces code that looks correct but breaks on the platform.
