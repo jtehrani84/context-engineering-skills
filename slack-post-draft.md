@@ -1,14 +1,15 @@
-# Slack Post Draft — Context Engineering Part 4: Skills
+# Slack Post Draft — Context Engineering Part 5: Skills
 
 ## For: #tmt-solutions (adjust channel tag for #ai-club)
 
 ---
 
-Hey TMT - CMRCL - SEs — Part 4 of the context engineering series. This one has real proof data.
+Hey TMT - CMRCL - SEs — Part 5 of the context engineering series. This one has real proof data.
 
 Part 1 gave Claude memory.
 Part 2 showed what happens when that memory is missing.
 Part 3 connected it to CRM, Slack, and GitHub.
+Part 4 added a knowledge graph so it finds the right context automatically.
 This one is about what happens when you give it the actual Salesforce development playbook — and then watch it fail, learn, and succeed.
 
 :hammer_and_wrench: Teaching Claude to Build: Context Engineering Part 4 :hammer_and_wrench:
@@ -60,7 +61,8 @@ That's what makes them better than training data alone. Training data gives you 
 
 :link: The stack in action: skills + sf CLI + Salesforce Docs MCP + Tooling API = a full agent published from the terminal while the owner did yard work.
 
-Part 4 — https://jtehrani84.github.io/context-engineering-skills/
+Part 5 — https://jtehrani84.github.io/context-engineering-skills/
+Part 4 — https://jtehrani84.github.io/context-engineering-knowledge-graph/
 Part 3 — https://jtehrani84.github.io/context-engineering-mcp/
 Part 2 — https://jtehrani84.github.io/context-engineering-agentscript/
 Part 1 — https://jtehrani84.github.io/claude-context-architecture/
