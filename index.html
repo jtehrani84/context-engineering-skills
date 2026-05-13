@@ -573,6 +573,101 @@
         </div>
     </section>
 
+    <!-- Proof Point: Real Build -->
+    <section class="py-24 px-6 bg-gradient-to-b from-slate-900/50 to-slate-800/30">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-xs font-semibold tracking-widest text-emerald-400/70 uppercase mb-4 fade-up">Proof Point</div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">The Meridian Agent Build</h2>
+            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-8 fade-up stagger-2">
+                A full 7-topic, 68-action Agentforce agent &mdash; built from scratch, published to a live org, entirely through Agent Script CLI. While the owner did yard work.
+            </p>
+            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-3">
+                It didn't work on the first try. It took 6 iterations. That's the real story.
+            </p>
+
+            <!-- Timeline -->
+            <div class="glass-card rounded-xl p-8 mb-12 fade-up stagger-4">
+                <h3 class="text-lg font-semibold text-white mb-6">The Iteration Chain</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="flex gap-4 items-start">
+                        <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 1</div>
+                        <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
+                        <div><span class="text-red-400">FAIL</span> &mdash; Split into multiple files. Compiler: "Missing config/system/start_agent." <span class="text-gray-500">Learning: Agent Script is one file per agent.</span></div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 2</div>
+                        <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
+                        <div><span class="text-red-400">FAIL</span> &mdash; Actions referenced by name only. Server: "'action_name' is not defined." <span class="text-gray-500">Learning: Actions need target definitions.</span></div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 3</div>
+                        <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
+                        <div><span class="text-red-400">FAIL</span> &mdash; Targets inline in reasoning block. Server: "unexpected ://" <span class="text-gray-500">Learning: Topic has two levels &mdash; actions: defines, reasoning.actions: references.</span></div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 4</div>
+                        <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
+                        <div><span class="text-red-400">FAIL</span> &mdash; Top-level actions block. Server still rejected. <span class="text-gray-500">Learning: actions: is per-topic, sibling of reasoning:.</span></div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 5</div>
+                        <div class="w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0"></div>
+                        <div><span class="text-amber-400">CLOSE</span> &mdash; Correct structure! But output schema mismatches (Apex names vs Flow names). <span class="text-gray-500">Learning: Flows expose different I/O than Apex classes.</span></div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 6</div>
+                        <div class="w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0"></div>
+                        <div><span class="text-emerald-400">SUCCESS</span> &mdash; Parsed flow XML for ground-truth schemas. Published. Live in org.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What unblocked it -->
+            <div class="grid md:grid-cols-2 gap-6 mb-12">
+                <div class="glass-card rounded-xl p-6 border-t-2 border-cyan-500 fade-up stagger-1">
+                    <h3 class="font-semibold text-cyan-400 mb-3">What Unblocked It</h3>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#8250;</span> <strong>Salesforce Docs MCP</strong> &mdash; searched live docs mid-session, found the canonical two-level pattern that no training data had</li>
+                        <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#8250;</span> <strong>sf agent validate</strong> &mdash; server compiler gave exact line numbers + "did you mean?" suggestions</li>
+                        <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#8250;</span> <strong>Flow XML parsing</strong> &mdash; extracted actual I/O schemas from 38 flow files programmatically</li>
+                        <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#8250;</span> <strong>Tooling API</strong> &mdash; deleted orphaned action, assigned permissions, queried metadata &mdash; all without opening a browser</li>
+                    </ul>
+                </div>
+                <div class="glass-card rounded-xl p-6 border-t-2 border-purple-500 fade-up stagger-2">
+                    <h3 class="font-semibold text-purple-400 mb-3">Skills + Tools Used</h3>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">/sf-ai-agentscript</code> &mdash; DSL reference, validator, architecture patterns</li>
+                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">/developing-agentforce</code> &mdash; metadata lifecycle, safety review</li>
+                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">salesforce-docs MCP</code> &mdash; live doc search (the breakthrough)</li>
+                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">sf agent validate/publish</code> &mdash; server-side compilation + deploy</li>
+                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">sf data create record</code> &mdash; programmatic permission assignment</li>
+                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">sf api request rest</code> &mdash; Tooling API for orphan cleanup</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- The result -->
+            <div class="glass-card rounded-xl p-8 border border-emerald-500/20 bg-emerald-500/5 fade-up stagger-3">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center mb-6">
+                    <div><div class="text-3xl font-bold text-emerald-400">7</div><div class="text-xs text-gray-500 mt-1">Persona Topics</div></div>
+                    <div><div class="text-3xl font-bold text-cyan-400">68</div><div class="text-xs text-gray-500 mt-1">Actions Bound</div></div>
+                    <div><div class="text-3xl font-bold text-amber-400">6</div><div class="text-xs text-gray-500 mt-1">Iterations</div></div>
+                    <div><div class="text-3xl font-bold text-purple-400">~3 hrs</div><div class="text-xs text-gray-500 mt-1">Total Build Time</div></div>
+                </div>
+                <p class="text-gray-300 text-center text-sm">
+                    <strong>The Meridian Intelligence Agent</strong> &mdash; published to a live Salesforce org via <code class="text-emerald-300">sf agent publish authoring-bundle</code>. Version-controlled in git. Diffable. Reproducible. No Agent Builder UI required.
+                </p>
+            </div>
+
+            <!-- Punchline -->
+            <div class="mt-12 text-center fade-up stagger-4">
+                <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+                    The skills didn't write perfect code on the first try. They caught errors early, gave actionable feedback, and converged on the right answer through systematic elimination. <strong>That's what makes them better than training data alone.</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- Getting Started -->
     <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">

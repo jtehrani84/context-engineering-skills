@@ -4,31 +4,61 @@
 
 ---
 
-Hey TMT - CMRCL - SEs — Part 4 of the context engineering series. This one took a while because it changed how I build.
+Hey TMT - CMRCL - SEs — Part 4 of the context engineering series. This one has real proof data.
 
 Part 1 gave Claude memory.
 Part 2 showed what happens when that memory is missing.
 Part 3 connected it to CRM, Slack, and GitHub.
-This one is about what happens when you give it the actual Salesforce development playbook.
+This one is about what happens when you give it the actual Salesforce development playbook — and then watch it fail, learn, and succeed.
 
 :hammer_and_wrench: Teaching Claude to Build: Context Engineering Part 4 :hammer_and_wrench:
 
 Claude knows Salesforce from training data. It can write Apex, design Flows, scaffold LWC components. But training data has three problems that compound in production: it's outdated, it's approximate, and for some things it's completely missing.
 
-Agent Script — the language for authoring Agentforce agents — launched in 2025 with zero training data in any model. Without the right context, Claude pattern-matches from Python syntax and produces code that looks correct but breaks on the platform. Confident and wrong — the same failure mode from Part 2, but with higher stakes.
+Agent Script — the language for authoring Agentforce agents — launched in 2025 with zero training data in any model. Without the right context, Claude pattern-matches from Python syntax and produces code that looks correct but breaks on the platform.
 
 The fix is a four-layer stack:
+- Layer 1: Model training (broad but imprecise)
+- Layer 2: sf CLI (live org execution, not memory)
+- Layer 3: 65 production skills (override training data when they conflict)
+- Layer 4: Salesforce Docs MCP (live documentation search mid-session)
 
-Layer 1: Model training — Apex, LWC, Flow, SOQL. The foundation, broad but imprecise.
-Layer 2: sf CLI — live org execution. Not generating from memory, running `sf agent validate` and `sf apex run test` against a real org.
-Layer 3: 65 production skills — 30 from Salesforce's official `forcedotcom/afv-library` (just graduated from a community project) + 35 community skills. Structured workflows with templates, scoring rubrics, and hard-stop constraints. These override training data when they conflict.
-Layer 4: Agent Script reference files — 24 docs and 18 asset files inside the skill. The entire language spec, execution model, anti-patterns, and known issues. None of it exists in any model's training data.
+:test_tube: The Proof Point (this actually happened May 12)
 
-The case study that convinced me: I'd spent weeks manually wiring 63 agent actions across 7 Agentforce topics through the Agent Builder UI. Scanning 130 Apex classes for @InvocableMethod annotations, mapping I/O parameters through trial and error, debugging routing issues one action at a time. Three skills replace that entire workflow — `/developing-agentforce` auto-scans backing logic, generates .agent files with proper action bindings, validates with `sf agent validate`, previews with live actions (catching the isLocal issue before publish), and scores on a 100-point rubric with a 7-category safety review.
+I asked Claude to build a full 7-topic, 68-action Agentforce agent from scratch using Agent Script. No Agent Builder UI. Pure CLI.
 
-The .agent file becomes version-controlled in git. Diffable. Reviewable. The weeks become minutes.
+It took 6 iterations to get right:
+1. :x: Multi-file split — wrong. Agent Script is one file.
+2. :x: Actions by name only — wrong. Need target definitions.
+3. :x: Targets in reasoning block — wrong. "Unexpected ://"
+4. :x: Top-level actions block — wrong. Per-topic only.
+5. :warning: Correct structure! But output schema mismatches (Apex names vs Flow names).
+6. :white_check_mark: Parsed flow XML for ground-truth schemas. Published. Live.
 
-I also cover the collaboration model — how the SE describes what they need in natural language, skills auto-trigger, Claude builds autonomously through the skill pipeline, and stops at approval gates before anything touches the org. Design decisions and go/no-go stay with the human. Construction and validation are automated.
+The breakthrough wasn't skill knowledge alone. It was the Salesforce Docs MCP — Claude searched the live Salesforce documentation mid-session and found the canonical two-level pattern that no training data had. Skills caught the easy errors. The docs MCP resolved the hard one.
+
+:chart_with_upwards_trend: Result: Meridian Intelligence Agent
+
+- 7 persona-based topics (Intelligence, Sales Coach, Service, Marketing, BDR, Quoting, Workspace)
+- 68 actions bound (all 57 existing + new intelligence atoms)
+- Published via `sf agent publish authoring-bundle` — no UI
+- Version-controlled in git. Diffable. Reproducible.
+- Total build time: ~3 hours (original estimate: "7-9 days")
+- Human involvement: said "go" + clicked one OAuth prompt
+
+The existing agent (built over weeks in Agent Builder UI) still runs as fallback. The new one runs alongside it — same actions, better routing, deterministic patterns for 80% of usage.
+
+:brain: What This Proves About Skills
+
+Skills didn't write perfect code on try 1. They:
+- Caught structural errors before hitting the server (local validator)
+- Gave actionable feedback at each step (exact line numbers, "did you mean?")
+- Converged on the right answer through systematic elimination
+- Resolved blockers programmatically (CLI update, permission assignment, orphan cleanup — all without opening a browser)
+
+That's what makes them better than training data alone. Training data gives you a plausible first attempt. Skills give you the iteration loop that converges.
+
+:link: The stack in action: skills + sf CLI + Salesforce Docs MCP + Tooling API = a full agent published from the terminal while the owner did yard work.
 
 Part 4 — https://jtehrani84.github.io/context-engineering-skills/
 Part 3 — https://jtehrani84.github.io/context-engineering-mcp/
