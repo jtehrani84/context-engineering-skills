@@ -4,24 +4,18 @@
 
 ---
 
-:hammer_and_wrench: **Context Engineering Part 5 — Teaching Claude to Build Agentforce Agents** :hammer_and_wrench:
+Good morning #tmt-solutions - fresh off day 1 of CKO2, where @Ryan Schellack illustrated the fast path to Agentforce adoption with coding agents. I wanted to share my own experience, including the failures, so none of you have to go through it.
 
-Fresh off CKO2 — Ryan Schellack's session nailed it: the fast path to Agentforce adoption starts with coding agents. Claude Code + Agent Script + ADLC Skills = scaffold, prove, iterate on the spot. This post is the deep dive on exactly how that works in practice, what breaks, and what the iteration loop actually looks like.
+:claude-wave::hammer_and_wrench: Context Engineering Part 5 — Teaching Claude to Build Agentforce Agents :hammer_and_wrench::claude-wave:
 
-Part 1 gave Claude memory. Part 2 showed what happens without it. Part 3 connected it to CRM, Slack, and GitHub. Part 4 added a knowledge graph. This one teaches it how to build Salesforce — and proves it with a real agent build.
+Weeks back, I worked with Claude to programmatically build a custom Agentforce agent deployed to both a Slack Demo org and an SDO. This wasn't a typical employee or service agent using OOB actions. It was an employee agent with 7 subagents (topics) bound with custom Apex actions calling endpoints of a Node.js application hosted on Cloud Run.
 
-**The problem:** Claude knows Apex and Flows from training data. But Agent Script — the language for authoring Agentforce agents — launched with zero training data in any model. Without the right context, Claude produces code that looks correct but breaks on the platform.
+Opus 4.6's training had it thinking it knew how to do this programmatically. It didn't - and I was too new to Claude Code to know that it didn't. We spent 4-5 days debugging and never got there. Turns out our platform and tooling never actually had the capability to programmatically bind custom actions without the legacy Builder or Agentforce Studio. Neither Claude nor I knew this until we finally bound the agent actions manually. After lots of trial and error we got to a successfully deployed agent that works incredibly well for its use case.
 
-**The fix:** A four-layer stack:
-1. Model training (broad but imprecise)
-2. sf CLI (live org execution)
-3. 65 production skills (override training data when they conflict)
-4. Salesforce Docs MCP (live documentation search mid-session)
+Then Agent Script dropped at TDX. Yesterday's CKO2 session showed the GTM motion. And on Tuesday I rebuilt the entire agent - 3 hours, zero Agent Builder clicks.
 
-:test_tube: **Proof point — May 12:**
-
-Built a full 7-topic, 68-action Agentforce agent from scratch. No Agent Builder UI. Pure CLI + Agent Script.
-
+:test_tube: The rebuild — May 12:
+Full 7-topic, 68-action Agentforce agent from scratch. No UI. Pure CLI + Agent Script.
 6 iterations to converge:
 :x: Multi-file split — wrong. Agent Script is one file.
 :x: Actions by name only — wrong. Need target definitions.
@@ -30,27 +24,29 @@ Built a full 7-topic, 68-action Agentforce agent from scratch. No Agent Builder 
 :warning: Correct structure! But output schema mismatches.
 :white_check_mark: Parsed flow XML for ground-truth schemas. Published. Live.
 
-The breakthrough: Salesforce Docs MCP searched live documentation mid-session and found the canonical pattern no training data had. Skills caught the easy errors. The docs resolved the hard one.
+The breakthrough was the Salesforce Docs MCP — Claude searched live documentation mid-session and found the canonical pattern that no training data had. 65 production skills caught the structural errors. The docs MCP resolved the hard one.
 
-:chart_with_upwards_trend: **Result:**
+:chart_with_upwards_trend: Result:
 - 7 persona topics, 68 actions bound
 - Published via `sf agent publish authoring-bundle`
 - Version-controlled. Diffable. Reproducible.
-- ~3 hours total (original Agent Builder approach: weeks)
+- ~3 hours total (vs. 5 days of failed attempts before Agent Script existed)
 - Human involvement: said "go" + one OAuth click
 
-:rocket: **New: labs.agentforce.com** — zero-friction headless access to Agentforce from Claude Code, Codex, or Cursor. No org provisioning. Connect and build in minutes.
+What used to be tedious is now a fun Tuesday afternoon.
 
-For those internal to Salesforce — there's a Slack canvas from CKO with the full coding agent toolkit (ADLC plugin, ADL Data Libraries, Custom Scorers, Custom Connections). Search "Build Fast with Coding Agents" in Slack.
+:rocket: New: labs.agentforce.com — zero-friction headless access to Agentforce from Claude Code, Codex, or Cursor. No org provisioning. Connect and build in minutes.
+
+Here's the <https://salesforce.enterprise.slack.com/docs/T01G0063H29/F0B33T0T8D8|Slack canvas from CKO> with the full coding agent toolkit (ADLC plugin, ADL Data Libraries, Custom Scorers, Custom Connections).
 
 :link: Full interactive breakdown: https://jtehrani84.github.io/context-engineering-skills/
 
-Series:
-Part 5 (this) — https://jtehrani84.github.io/context-engineering-skills/
-Part 4 — https://jtehrani84.github.io/context-engineering-knowledge-graph/
-Part 3 — https://jtehrani84.github.io/context-engineering-mcp/
-Part 2 — https://jtehrani84.github.io/context-engineering-agentscript/
-Part 1 — https://jtehrani84.github.io/claude-context-architecture/
+This is Part 5 of the context engineering series:
+:one: https://jtehrani84.github.io/claude-context-architecture/
+:two: https://jtehrani84.github.io/context-engineering-agentscript/
+:three: https://jtehrani84.github.io/context-engineering-mcp/
+:four: https://jtehrani84.github.io/context-engineering-knowledge-graph/
+:five: https://jtehrani84.github.io/context-engineering-skills/
 
 ---
 
