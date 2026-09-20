@@ -199,9 +199,9 @@
     <section class="py-24 px-6 bg-slate-800/30">
         <div class="max-w-6xl mx-auto">
             <div class="text-xs font-semibold tracking-widest text-purple-400/70 uppercase mb-4 fade-up">The Stack</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Four Layers. One Development Platform.</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Four Layers, One Development Platform</h2>
             <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-16 fade-up stagger-2">
-                Each layer compensates for the one above it. Training gives Claude the language. CLI gives it execution. Skills give it guardrails. Agent Script reference files give it knowledge that doesn't exist anywhere else.
+                Each layer compensates for the one above it. Training gives Claude the language, the CLI gives it live execution, and skills add the guardrails, while the Agent Script reference files carry knowledge that doesn't exist anywhere else.
             </p>
 
             <div class="space-y-4">
@@ -241,7 +241,7 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-xl font-semibold text-white mb-2">sf CLI Tooling</h3>
-                            <p class="text-gray-400 mb-3">Live org execution. Not generating code from memory &mdash; running commands against a real Salesforce org. Deploy, test, validate, preview.</p>
+                            <p class="text-gray-400 mb-3">Live org execution. Instead of generating code from memory, it runs commands against a real Salesforce org &mdash; deploying, testing, validating, and previewing.</p>
                             <div class="flex flex-wrap gap-2">
                                 <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded-full font-mono">sf project deploy start</span>
                                 <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded-full font-mono">sf apex run test</span>
@@ -295,7 +295,7 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-xl font-semibold text-white mb-2">Agent Script <span class="text-xs font-mono text-amber-400/60 ml-2">zero training data</span></h3>
-                            <p class="text-gray-400 mb-3">Everything Claude knows about Agent Script comes from 24 reference docs and 18 asset files inside the skill. The execution model, syntax rules, anti-patterns, known issues &mdash; none of it exists in any model's training data. This is the layer where skills aren't a nice-to-have. They're the only source.</p>
+                            <p class="text-gray-400 mb-3">Everything Claude knows about Agent Script comes from 24 reference docs and 18 asset files inside the skill. The execution model, syntax rules, anti-patterns, and known issues &mdash; none of it exists in any model's training data. This is the layer where skills stop being a nice-to-have and become the only source there is.</p>
                             <div class="flex flex-wrap gap-2">
                                 <span class="text-xs bg-amber-500/10 text-amber-300 px-2 py-1 rounded-full">24 reference docs</span>
                                 <span class="text-xs bg-amber-500/10 text-amber-300 px-2 py-1 rounded-full">18+ asset files</span>
@@ -314,9 +314,9 @@
     <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
             <div class="text-xs font-semibold tracking-widest text-emerald-400/70 uppercase mb-4 fade-up">The Skills</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-up stagger-1">65 Skills. One Stack.</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-up stagger-1">65 Skills, One Stack</h2>
             <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
-                Two sources. The official Salesforce library builds things. The community skills review and analyze things. Both are needed.
+                They come from two sources. The official Salesforce library builds things, while the community skills review and analyze them &mdash; and you need both.
             </p>
 
             <!-- Two sources -->
@@ -451,7 +451,7 @@
             <div class="glass-card rounded-xl p-6 border-l-4 border-amber-500/60 fade-up stagger-4">
                 <h3 class="font-semibold text-amber-400 mb-2">The isLocal Problem &mdash; Solved</h3>
                 <p class="text-gray-300 leading-relaxed text-sm">
-                    Agent Builder defaults actions to <code class="text-amber-300">isLocal=true</code> &mdash; mocked, not connected to real data. You discover this at publish time after manual testing. The skill pipeline catches it earlier: preview first with mocked actions to test routing, then <code class="text-amber-300">--use-live-actions</code> to verify real data flows. The publish checkpoint requires live-action preview to pass. No more silent isLocal failures in production.
+                    Agent Builder defaults actions to <code class="text-amber-300">isLocal=true</code>, so they run mocked instead of connected to real data, and you usually find that out at publish time after manual testing. The skill pipeline catches it earlier, previewing first with mocked actions to test routing, then switching to <code class="text-amber-300">--use-live-actions</code> to verify real data flows. Because the publish checkpoint requires a passing live-action preview, there are no more silent isLocal failures in production.
                 </p>
             </div>
         </div>
@@ -463,7 +463,7 @@
             <div class="text-xs font-semibold tracking-widest text-blue-400/70 uppercase mb-4 fade-up">The Workflow</div>
             <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">How We Build Together</h2>
             <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
-                The SE describes. Claude builds. Checkpoints gate every irreversible action. Design and go/no-go decisions stay with the human. Construction and validation run autonomously.
+                The SE describes what they want, and Claude builds it. Checkpoints gate every irreversible action, design and go/no-go decisions stay with the human, and construction and validation run autonomously.
             </p>
 
             <!-- Flow diagram -->
@@ -583,7 +583,7 @@
                 A full 7-topic, 68-action Agentforce agent &mdash; built from scratch, published to a live org, entirely through Agent Script CLI. While the owner did yard work.
             </p>
             <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-3">
-                It didn't work on the first try. It took 6 iterations. That's the real story.
+                It didn't work on the first try. Getting there took 6 iterations, and that's the real story.
             </p>
 
             <!-- Timeline -->
@@ -593,32 +593,32 @@
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 1</div>
                         <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-red-400">FAIL</span> &mdash; Split into multiple files. Compiler: "Missing config/system/start_agent." <span class="text-gray-500">Learning: Agent Script is one file per agent.</span></div>
+                        <div><span class="text-red-400">FAIL</span> &mdash; split the agent across multiple files, and the compiler came back with "Missing config/system/start_agent." <span class="text-gray-500">Agent Script wants one file per agent.</span></div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 2</div>
                         <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-red-400">FAIL</span> &mdash; Actions referenced by name only. Server: "'action_name' is not defined." <span class="text-gray-500">Learning: Actions need target definitions.</span></div>
+                        <div><span class="text-red-400">FAIL</span> &mdash; actions were referenced by name only, so the server threw "'action_name' is not defined." <span class="text-gray-500">Actions need real target definitions.</span></div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 3</div>
                         <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-red-400">FAIL</span> &mdash; Targets inline in reasoning block. Server: "unexpected ://" <span class="text-gray-500">Learning: Topic has two levels &mdash; actions: defines, reasoning.actions: references.</span></div>
+                        <div><span class="text-red-400">FAIL</span> &mdash; targets went inline in the reasoning block, and the server choked on "unexpected ://" <span class="text-gray-500">A topic has two levels, where the actions block defines the targets and the reasoning.actions block references them.</span></div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 4</div>
                         <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-red-400">FAIL</span> &mdash; Top-level actions block. Server still rejected. <span class="text-gray-500">Learning: actions: is per-topic, sibling of reasoning:.</span></div>
+                        <div><span class="text-red-400">FAIL</span> &mdash; moving it to a top-level actions block still got rejected by the server. <span class="text-gray-500">The actions block is per-topic, a sibling of reasoning rather than a global.</span></div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 5</div>
                         <div class="w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-amber-400">CLOSE</span> &mdash; Correct structure! But output schema mismatches (Apex names vs Flow names). <span class="text-gray-500">Learning: Flows expose different I/O than Apex classes.</span></div>
+                        <div><span class="text-amber-400">CLOSE</span> &mdash; the structure was finally right, but the output schema mismatched, with Apex names colliding with Flow names. <span class="text-gray-500">Flows expose different I/O than Apex classes.</span></div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 6</div>
                         <div class="w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-emerald-400">SUCCESS</span> &mdash; Parsed flow XML for ground-truth schemas. Published. Live in org.</div>
+                        <div><span class="text-emerald-400">SUCCESS</span> &mdash; parsing the flow XML for ground-truth schemas got it published and live in the org.</div>
                     </div>
                 </div>
             </div>
@@ -656,7 +656,7 @@
                     <div><div class="text-3xl font-bold text-purple-400">~3 hrs</div><div class="text-xs text-gray-500 mt-1">Total Build Time</div></div>
                 </div>
                 <p class="text-gray-300 text-center text-sm">
-                    <strong>The Meridian Intelligence Agent</strong> &mdash; published to a live Salesforce org via <code class="text-emerald-300">sf agent publish authoring-bundle</code>. Version-controlled in git. Diffable. Reproducible. No Agent Builder UI required.
+                    <strong>The Meridian Intelligence Agent</strong> &mdash; published to a live Salesforce org via <code class="text-emerald-300">sf agent publish authoring-bundle</code>. It's version-controlled in git, diffable and reproducible, and it needed no Agent Builder UI at all.
                 </p>
             </div>
 
@@ -680,7 +680,7 @@
                     Download agent-script.md
                 </a>
                 <p class="text-xs text-gray-500 mt-4">
-                    Or get the full starter kit: <code class="text-gray-400">git clone https://github.com/jtehrani84/claude-code-se-starter-kit.git</code>
+                    Or grab the full starter kit with <code class="text-gray-400">git clone https://github.com/jtehrani84/claude-code-se-starter-kit.git</code>
                 </p>
             </div>
         </div>
@@ -702,7 +702,7 @@
                         <span class="text-emerald-400 text-lg">&#9889;</span>
                     </div>
                     <div class="flex-1">
-                        <h3 class="font-semibold text-white mb-1">New: Zero-friction option</h3>
+                        <h3 class="font-semibold text-white mb-1">A new zero-friction option</h3>
                         <p class="text-sm text-gray-300"><a href="https://labs.agentforce.com" target="_blank" rel="noopener" class="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2">labs.agentforce.com</a> gives you instant headless access to Agentforce from Claude Code, Codex, Cursor, or Vibes &mdash; no org provisioning, no setup screens. Connect and start building in minutes.</p>
                     </div>
                 </div>
@@ -753,7 +753,7 @@
                     </div>
                     <div>
                         <p class="text-sm text-gray-300 leading-relaxed">
-                            <span class="font-semibold text-white">Salesforce colleagues:</span> there's an internal Slack canvas with the full toolkit &mdash; Agentforce Labs access, ADLC plugin, ADL Data Libraries, Custom Scorers, and Custom Connections skills. Search <span class="font-mono text-xs text-blue-300">"Build Fast with Coding Agents"</span> in Slack or ask your CKO channel.
+                            <span class="font-semibold text-white">Salesforce colleagues</span>, there's an internal Slack canvas with the full toolkit &mdash; Agentforce Labs access, ADLC plugin, ADL Data Libraries, Custom Scorers, and Custom Connections skills. Search <span class="font-mono text-xs text-blue-300">"Build Fast with Coding Agents"</span> in Slack or ask your CKO channel.
                         </p>
                     </div>
                 </div>
