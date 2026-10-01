@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teaching Claude to Build — Context Engineering, Part 5</title>
-    <meta name="description" content="Part 5 of the Context Engineering series. The four-layer Salesforce development stack: model training, sf CLI, 65 production skills, and Agent Script. From weeks of manual Agent Builder work to minutes of CLI-driven automation.">
+    <title>Teaching Claude to Build · Context Engineering, Part 5</title>
+    <meta name="description" content="Part 5 of the Context Engineering series. The four-layer Salesforce development stack: model training, sf CLI, a library of production skills, and Agent Script. From weeks of manual Agent Builder work to a few hours of CLI-driven automation.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,32 +135,12 @@
                 </h1>
                 <p class="text-xl md:text-2xl text-gray-300 leading-relaxed mb-8 fade-up stagger-2">
                     Part 1 gave Claude memory, Part 2 showed what happens without it, and Part 3 connected it to your systems.
-                    This one is about getting it to actually build Salesforce... with 65 production-grade skills, the sf&nbsp;CLI,
-                    and a language that has zero training data behind it.
+                    This one is about getting it to actually build Salesforce... with the 65 skills I had installed when I wrote this, the sf&nbsp;CLI,
+                    and a language the model had never seen.
                 </p>
                 <p class="text-lg text-gray-400 fade-up stagger-3">
-                    It's the four-layer stack that turns "write me an Apex class" into production code that comes back with a 150-point validation score.
+                    The stack I ended up with turns "write me an Apex class" into production code that comes back with a 150-point validation score, and the agent I built on it, further down this page, took zero clicks in Agent Builder.
                 </p>
-            </div>
-
-            <!-- Stats strip -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl fade-up stagger-4">
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-white">65</div>
-                    <div class="text-xs text-gray-500 mt-1">Skills</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-white">4</div>
-                    <div class="text-xs text-gray-500 mt-1">Layers</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-white">7</div>
-                    <div class="text-xs text-gray-500 mt-1">Playbooks</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl font-bold text-white">0</div>
-                    <div class="text-xs text-gray-500 mt-1">Agent Builder Clicks</div>
-                </div>
             </div>
         </div>
     </section>
@@ -168,33 +148,19 @@
     <!-- The Problem -->
     <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="text-xs font-semibold tracking-widest text-blue-400/70 uppercase mb-4 fade-up">The Problem</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Smart but Unsupervised</h2>
-            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
-                Claude already knows Salesforce, it can write Apex, design Flows, scaffold LWC components. The trouble is that training data brings three problems along with it, and they compound once you're in production.
-            </p>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="glass-card rounded-xl p-6 fade-up stagger-1">
-                    <div class="text-2xl mb-3">&#9888;&#65039;</div>
-                    <h3 class="font-semibold text-white mb-2">Outdated</h3>
-                    <p class="text-sm text-gray-400">Training data has a cutoff. New platform features, API changes, and deprecated patterns aren't reflected. Claude might generate code using <code class="text-blue-300 text-xs">@future</code> methods when Queueable with Finalizer is the current best practice.</p>
-                </div>
-                <div class="glass-card rounded-xl p-6 fade-up stagger-2">
-                    <div class="text-2xl mb-3">&#127919;</div>
-                    <h3 class="font-semibold text-white mb-2">Approximate</h3>
-                    <p class="text-sm text-gray-400">Claude knows Apex syntax but doesn't enforce governor limits, sharing model defaults, or CRUD/FLS checks unless prompted. It generates code that compiles but may not survive a security review.</p>
-                </div>
-                <div class="glass-card rounded-xl p-6 fade-up stagger-3">
-                    <div class="text-2xl mb-3">&#10060;</div>
-                    <h3 class="font-semibold text-white mb-2">Missing</h3>
-                    <p class="text-sm text-gray-400">Some things simply don't exist in training data. Agent Script &mdash; Salesforce's language for authoring Agentforce agents &mdash; launched in 2025 with <strong>zero training data in any AI model</strong>. Claude will pattern-match from Python and produce plausible but broken code.</p>
-                </div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Where Training Data Runs Out</h2>
+            <div class="max-w-3xl space-y-6 text-lg text-gray-300 leading-relaxed">
+                <p class="fade-up stagger-2">
+                    Claude already knows Salesforce, it can write Apex, design Flows, and scaffold LWC components. Ask it for an async job, though, and it might hand you <code class="text-blue-300 text-base">@future</code> methods when Queueable with a Finalizer is the recommended pattern, because training data has a cutoff and doesn't reflect the platform features, API changes, and deprecations that came after it. That's the outdated part.
+                </p>
+                <p class="fade-up stagger-3">
+                    A lot of what it knows is also approximate. It has the Apex syntax down, but unless you prompt for it, it won't enforce governor limits or sharing model defaults or CRUD/FLS checks, and you get code that compiles fine and may not survive a security review. Those gaps compound once you're in production.
+                </p>
             </div>
 
-            <div class="mt-12 glass-card rounded-xl p-6 border-l-4 border-red-500/60 fade-up stagger-4">
+            <div class="mt-10 max-w-3xl glass-card rounded-xl p-6 border-l-4 border-red-500/60 fade-up stagger-4">
                 <p class="text-gray-300 leading-relaxed">
-                    <span class="font-semibold text-red-400">The real cost isn't wrong code, it's confident wrong code.</span> Claude will generate Agent Script that looks syntactically reasonable, uses 4-space indentation, defines subagents and actions. It compiles in your head, and then it fails on the platform. And debugging "why does this .agent file not work" without knowing the actual language spec is a dead end.
+                    Agent Script is a different kind of problem, because it wasn't in the training data at all and nothing about the output looks off. It's Salesforce's language for authoring Agentforce agents, and it launched in 2025, after the training cutoff of the models I was using, so Claude had never seen it. It pattern-matches from Python instead and hands you Agent Script that looks syntactically reasonable, with 4-space indentation and subagents and actions all defined. It compiles in your head, and then it fails on the platform. Have you ever tried to figure out why a .agent file won't work when nobody in the conversation, you or Claude, has the actual language spec? It's a dead end.
                 </p>
             </div>
         </div>
@@ -203,10 +169,9 @@
     <!-- The Four-Layer Stack -->
     <section class="py-24 px-6 bg-slate-800/30">
         <div class="max-w-6xl mx-auto">
-            <div class="text-xs font-semibold tracking-widest text-purple-400/70 uppercase mb-4 fade-up">The Stack</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Four Layers, One Development Platform</h2>
-            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-16 fade-up stagger-2">
-                Each layer compensates for the one above it. Training gives Claude the language, the CLI gives it live execution, and skills add the guardrails, while the Agent Script reference files carry knowledge that doesn't exist anywhere else.
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">The Four-Layer Stack</h2>
+            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
+                Each layer compensates for the one above it, and the bottom layer, the Agent Script reference files, carries what the model I was building with had no way of knowing.
             </p>
 
             <div class="space-y-4">
@@ -218,24 +183,9 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-xl font-semibold text-white mb-2">Model Training</h3>
-                            <p class="text-gray-400 mb-3">Apex, LWC, Flow, SOQL, metadata API, platform concepts. It's the foundation, broad but imprecise, and it can be outdated on recent features.</p>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="text-xs bg-blue-500/10 text-blue-300 px-2 py-1 rounded-full">Apex syntax</span>
-                                <span class="text-xs bg-blue-500/10 text-blue-300 px-2 py-1 rounded-full">LWC patterns</span>
-                                <span class="text-xs bg-blue-500/10 text-blue-300 px-2 py-1 rounded-full">SOQL</span>
-                                <span class="text-xs bg-blue-500/10 text-blue-300 px-2 py-1 rounded-full">Flow concepts</span>
-                                <span class="text-xs bg-blue-500/10 text-blue-300 px-2 py-1 rounded-full">Governor limits</span>
-                                <span class="text-xs bg-blue-500/10 text-blue-300 px-2 py-1 rounded-full">Sharing model</span>
-                            </div>
+                            <p class="text-gray-400">Apex, LWC, Flow, SOQL, the metadata API, and platform concepts like governor limits and the sharing model. It's the foundation, broad but imprecise, and it can be out of date on anything that shipped after the cutoff.</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Flow arrows -->
-                <div class="flex justify-center gap-2 py-1">
-                    <div class="w-2 h-2 rounded-full bg-purple-400/40 flow-dot"></div>
-                    <div class="w-2 h-2 rounded-full bg-purple-400/40 flow-dot flow-dot-d1"></div>
-                    <div class="w-2 h-2 rounded-full bg-purple-400/40 flow-dot flow-dot-d2"></div>
                 </div>
 
                 <!-- Layer 2 -->
@@ -246,7 +196,7 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-xl font-semibold text-white mb-2">sf CLI Tooling</h3>
-                            <p class="text-gray-400 mb-3">Live org execution. Instead of generating code from memory, it runs commands against a real Salesforce org, deploying, testing, validating, and previewing.</p>
+                            <p class="text-gray-400 mb-3">This is live org execution. Instead of generating code from memory, Claude runs commands against a real Salesforce org to deploy, test, validate, and preview, using these:</p>
                             <div class="flex flex-wrap gap-2">
                                 <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded-full font-mono">sf project deploy start</span>
                                 <span class="text-xs bg-purple-500/10 text-purple-300 px-2 py-1 rounded-full font-mono">sf apex run test</span>
@@ -258,13 +208,6 @@
                     </div>
                 </div>
 
-                <!-- Flow arrows -->
-                <div class="flex justify-center gap-2 py-1">
-                    <div class="w-2 h-2 rounded-full bg-emerald-400/40 flow-dot"></div>
-                    <div class="w-2 h-2 rounded-full bg-emerald-400/40 flow-dot flow-dot-d1"></div>
-                    <div class="w-2 h-2 rounded-full bg-emerald-400/40 flow-dot flow-dot-d2"></div>
-                </div>
-
                 <!-- Layer 3 -->
                 <div class="layer-card glass-card rounded-xl p-6 border-l-4 border-emerald-500 fade-up stagger-3">
                     <div class="flex items-start gap-4">
@@ -272,24 +215,10 @@
                             <span class="text-lg font-bold text-emerald-400">3</span>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-xl font-semibold text-white mb-2">65 Production Skills</h3>
-                            <p class="text-gray-400 mb-3">30 from Salesforce's official <code class="text-emerald-300 text-xs">forcedotcom/afv-library</code> + 35 community skills. Structured workflows with templates, scoring rubrics, hard-stop constraints, and validation pipelines. These override training data when they conflict.</p>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded-full">150-point Apex scoring</span>
-                                <span class="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded-full">14 class templates</span>
-                                <span class="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded-full">Hard-stop constraints</span>
-                                <span class="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded-full">Safety reviews</span>
-                                <span class="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded-full">Code analyzer integration</span>
-                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Production Skills</h3>
+                            <p class="text-gray-400">I had 65 of these installed as of this build, 30 from Salesforce's official <code class="text-emerald-300 text-xs">forcedotcom/afv-library</code> and 35 community skills. They're structured workflows with templates, scoring rubrics, hard-stop constraints, and validation pipelines, and when one of them conflicts with training data, the skill wins. This is where the 150-point Apex scoring comes from, along with 14 class templates, the safety reviews, and the code analyzer integration.</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Flow arrows -->
-                <div class="flex justify-center gap-2 py-1">
-                    <div class="w-2 h-2 rounded-full bg-amber-400/40 flow-dot"></div>
-                    <div class="w-2 h-2 rounded-full bg-amber-400/40 flow-dot flow-dot-d1"></div>
-                    <div class="w-2 h-2 rounded-full bg-amber-400/40 flow-dot flow-dot-d2"></div>
                 </div>
 
                 <!-- Layer 4 -->
@@ -299,8 +228,8 @@
                             <span class="text-lg font-bold text-amber-400">4</span>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-xl font-semibold text-white mb-2">Agent Script <span class="text-xs font-mono text-amber-400/60 ml-2">zero training data</span></h3>
-                            <p class="text-gray-400 mb-3">Everything Claude knows about Agent Script comes from 24 reference docs and 18 asset files inside the skill. The execution model, syntax rules, anti-patterns, and known issues &mdash; none of it exists in any model's training data. This is the layer where skills stop being a nice-to-have and become the only source there is.</p>
+                            <h3 class="text-xl font-semibold text-white mb-2">Agent Script <span class="text-xs font-mono text-amber-400/60 ml-2">not in training data</span></h3>
+                            <p class="text-gray-400 mb-3">Everything Claude knows about Agent Script comes from 24 reference docs and 18 asset files inside the skill. The execution model, the syntax rules, the anti-patterns, and the known issues weren't in the training data of the model I was building with, so for this one language the skill is the only source Claude has to work from. It also carries a 100-point rubric, a safety review across seven categories, and the hub-and-spoke FSM pattern the agents are built around.</p>
                             <div class="flex flex-wrap gap-2">
                                 <span class="text-xs bg-amber-500/10 text-amber-300 px-2 py-1 rounded-full">24 reference docs</span>
                                 <span class="text-xs bg-amber-500/10 text-amber-300 px-2 py-1 rounded-full">18+ asset files</span>
@@ -318,83 +247,27 @@
     <!-- Skills Deep Dive -->
     <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="text-xs font-semibold tracking-widest text-emerald-400/70 uppercase mb-4 fade-up">The Skills</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-up stagger-1">65 Skills, One Stack</h2>
-            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
-                They come from two sources. The official Salesforce library builds things, while the community skills review and analyze them, and you really do need both.
-            </p>
-
-            <!-- Two sources -->
-            <div class="grid md:grid-cols-2 gap-6 mb-12">
-                <div class="glass-card rounded-xl p-6 border-t-2 border-blue-500 fade-up stagger-1">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                            <span class="text-sm font-bold text-blue-400">30</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-white">AFV Library</h3>
-                            <p class="text-xs text-gray-500 font-mono">forcedotcom/afv-library</p>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-400 mb-3">Official Salesforce skills. Production-grade generators with templates, scoring, and validation. Maintained by the Agentforce Vibes team.</p>
-                    <div class="text-xs text-blue-400 font-semibold">Generators &mdash; they create code and metadata</div>
-                </div>
-                <div class="glass-card rounded-xl p-6 border-t-2 border-purple-500 fade-up stagger-2">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                            <span class="text-sm font-bold text-purple-400">35</span>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-white">sf-* Community Skills</h3>
-                            <p class="text-xs text-gray-500 font-mono">Pre-installed with Claude Code</p>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-400 mb-3">Community-built skills for Data Cloud, Industries, architecture review, debugging, SOQL optimization, and domains the AFV library doesn't cover yet.</p>
-                    <div class="text-xs text-purple-400 font-semibold">Analyzers &mdash; they review, debug, and strategize</div>
-                </div>
-            </div>
-
-            <!-- Category grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div class="skill-card glass-card rounded-xl p-4 fade-up stagger-1">
-                    <div class="text-xs text-amber-400 font-semibold mb-2">Agentforce</div>
-                    <div class="text-2xl font-bold text-white mb-1">3</div>
-                    <p class="text-xs text-gray-500">Build, test, observe agents</p>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-4 fade-up stagger-2">
-                    <div class="text-xs text-blue-400 font-semibold mb-2">Apex</div>
-                    <div class="text-2xl font-bold text-white mb-1">3</div>
-                    <p class="text-xs text-gray-500">Generate, test, refactor</p>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-4 fade-up stagger-3">
-                    <div class="text-xs text-emerald-400 font-semibold mb-2">UI Bundle</div>
-                    <div class="text-2xl font-bold text-white mb-1">10</div>
-                    <p class="text-xs text-gray-500">React apps on Salesforce</p>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-4 fade-up stagger-4">
-                    <div class="text-xs text-purple-400 font-semibold mb-2">Metadata</div>
-                    <div class="text-2xl font-bold text-white mb-1">8</div>
-                    <p class="text-xs text-gray-500">Objects, fields, pages, tabs</p>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-4 fade-up stagger-1">
-                    <div class="text-xs text-cyan-400 font-semibold mb-2">Data Cloud</div>
-                    <div class="text-2xl font-bold text-white mb-1">7</div>
-                    <p class="text-xs text-gray-500">Connect to activate</p>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-4 fade-up stagger-2">
-                    <div class="text-xs text-pink-400 font-semibold mb-2">Industries</div>
-                    <div class="text-2xl font-bold text-white mb-1">7</div>
-                    <p class="text-xs text-gray-500">OmniStudio, CME, EPC</p>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-4 fade-up stagger-3">
-                    <div class="text-xs text-lime-400 font-semibold mb-2">Flow</div>
-                    <div class="text-2xl font-bold text-white mb-1">1</div>
-                    <p class="text-xs text-gray-500">MCP 3-step pipeline</p>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-4 fade-up stagger-4">
-                    <div class="text-xs text-gray-400 font-semibold mb-2">Utility</div>
-                    <div class="text-2xl font-bold text-white mb-1">26</div>
-                    <p class="text-xs text-gray-500">Deploy, debug, SOQL, docs</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Where the Skills Come From</h2>
+            <div class="max-w-3xl space-y-6 text-lg text-gray-300 leading-relaxed">
+                <p class="fade-up stagger-2">
+                    Thirty of mine came from Salesforce's official AFV library, <code class="text-blue-300 text-base">forcedotcom/afv-library</code>, which the Agentforce Vibes team maintains. Those are production-grade generators with templates, scoring, and validation built in, so they're what actually creates the code and metadata. The other 35 are the sf-* community skills that come pre-installed with Claude Code. They cover Data Cloud, Industries, architecture review, debugging, SOQL optimization, and whatever the AFV library didn't cover when I installed it... more reviewers than builders, and you really do need both kinds.
+                </p>
+                <p class="fade-up stagger-3">
+                    Here's how the 65 broke down by category when I counted them:
+                </p>
+                <div class="fade-up stagger-3">
+                    <table class="w-full text-sm text-left text-gray-400">
+                        <tbody class="divide-y divide-slate-700/50">
+                            <tr><td class="py-2 pr-3 text-amber-400 font-semibold">Agentforce</td><td class="py-2 pr-3 text-white font-bold">3</td><td class="py-2">Build, test, observe agents</td></tr>
+                            <tr><td class="py-2 pr-3 text-blue-400 font-semibold">Apex</td><td class="py-2 pr-3 text-white font-bold">3</td><td class="py-2">Generate, test, refactor</td></tr>
+                            <tr><td class="py-2 pr-3 text-emerald-400 font-semibold">UI Bundle</td><td class="py-2 pr-3 text-white font-bold">10</td><td class="py-2">React apps on Salesforce</td></tr>
+                            <tr><td class="py-2 pr-3 text-purple-400 font-semibold">Metadata</td><td class="py-2 pr-3 text-white font-bold">8</td><td class="py-2">Objects, fields, pages, tabs</td></tr>
+                            <tr><td class="py-2 pr-3 text-cyan-400 font-semibold">Data Cloud</td><td class="py-2 pr-3 text-white font-bold">7</td><td class="py-2">Connect to activate</td></tr>
+                            <tr><td class="py-2 pr-3 text-pink-400 font-semibold">Industries</td><td class="py-2 pr-3 text-white font-bold">7</td><td class="py-2">OmniStudio, CME, EPC</td></tr>
+                            <tr><td class="py-2 pr-3 text-lime-400 font-semibold">Flow</td><td class="py-2 pr-3 text-white font-bold">1</td><td class="py-2">MCP 3-step pipeline</td></tr>
+                            <tr><td class="py-2 pr-3 text-gray-300 font-semibold">Utility</td><td class="py-2 pr-3 text-white font-bold">26</td><td class="py-2">Deploy, debug, SOQL, docs</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -403,178 +276,44 @@
     <!-- The Agentforce Trio -->
     <section class="py-24 px-6 bg-slate-800/30">
         <div class="max-w-6xl mx-auto">
-            <div class="text-xs font-semibold tracking-widest text-amber-400/70 uppercase mb-4 fade-up">Case Study</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">From Weeks to Minutes</h2>
-            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
-                I built an intelligence platform with 7 Agentforce topics and 63 agent actions. Each action had to be wired to an Apex invocable method through Agent Builder, which meant manually scanning classes, mapping I/O parameters, and debugging routing. It took weeks across multiple sessions.
-            </p>
-            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-16 fade-up stagger-3">
-                Three skills replace that entire workflow.
-            </p>
-
-            <!-- The Trio -->
-            <div class="grid md:grid-cols-3 gap-6 mb-12">
-                <div class="glass-card rounded-xl p-6 border-t-2 border-blue-500 fade-up stagger-1">
-                    <div class="font-mono text-xs text-blue-400 mb-3">/developing-agentforce</div>
-                    <h3 class="font-semibold text-white text-lg mb-3">Build &amp; Iterate</h3>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&#8250;</span> Describe agent in natural language</li>
-                        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&#8250;</span> Auto-scans project for @InvocableMethod</li>
-                        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&#8250;</span> Marks actions EXISTS or NEEDS STUB</li>
-                        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&#8250;</span> Generates .agent file + backing logic</li>
-                        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&#8250;</span> Preview (mocked) &rarr; Preview (live) &rarr; Publish</li>
-                        <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">&#8250;</span> 100-point scoring + safety review</li>
-                    </ul>
-                </div>
-                <div class="glass-card rounded-xl p-6 border-t-2 border-emerald-500 fade-up stagger-2">
-                    <div class="font-mono text-xs text-emerald-400 mb-3">/testing-agentforce</div>
-                    <h3 class="font-semibold text-white text-lg mb-3">Validate &amp; Score</h3>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#8250;</span> Ad-hoc preview testing (Mode A)</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#8250;</span> Batch test spec YAML (Mode B)</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#8250;</span> Safety verdicts per conversation</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#8250;</span> Fix loop (max 3 iterations)</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#8250;</span> Direct action execution via REST</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">&#8250;</span> Regression suites for CI/CD</li>
-                    </ul>
-                </div>
-                <div class="glass-card rounded-xl p-6 border-t-2 border-purple-500 fade-up stagger-3">
-                    <div class="font-mono text-xs text-purple-400 mb-3">/observing-agentforce</div>
-                    <h3 class="font-semibold text-white text-lg mb-3">Monitor &amp; Improve</h3>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> Query STDM from Data Cloud</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> Session trace analysis</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> Issue classification</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> Reproduce in preview</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> Edit &rarr; validate &rarr; re-publish</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> Regression detection</li>
-                    </ul>
-                </div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Replacing the Agent Builder Wiring</h2>
+            <div class="max-w-3xl space-y-6 text-lg text-gray-300 leading-relaxed">
+                <p class="fade-up stagger-2">
+                    I built an intelligence platform with 7 Agentforce topics and 63 agent actions, and every one of those actions had to be wired to an Apex invocable method by hand in the Agent Builder UI. That meant scanning Apex classes for <code class="text-blue-300 text-base">@InvocableMethod</code> myself, mapping I/O parameters through trial and error, and debugging routing through Setup UI logs, with no version control on any of the agent configuration. It took weeks across multiple sessions.
+                </p>
+                <p class="fade-up stagger-3">
+                    Three skills replace that entire workflow. The first is <code class="text-blue-300 text-base">/developing-agentforce</code>. You describe the agent in natural language, it scans the project for <code class="text-blue-300 text-base">@InvocableMethod</code> and marks each action EXISTS or NEEDS STUB, then it generates the .agent file and the backing logic, with stubs for whatever's missing and I/O typed from the skill's reference docs. It previews with mocked actions, previews again live, and only then publishes, scoring the agent against a 100-point rubric and running a safety review on the way.
+                </p>
+                <p class="fade-up stagger-4">
+                    <code class="text-emerald-300 text-base">/testing-agentforce</code> handles validation with ad-hoc preview testing (Mode A), batch test specs in YAML (Mode B), a safety verdict per conversation, direct action execution over REST, and regression suites you can run in CI/CD. When something fails it goes into a fix loop, capped at three iterations. <code class="text-purple-300 text-base">/observing-agentforce</code> is the monitor-and-improve side. It queries STDM from Data Cloud, analyzes session traces, classifies the issue, reproduces it in preview, then edits, validates, and re-publishes, and it watches for regressions, where before I'd have been digging through Setup UI logs.
+                </p>
             </div>
 
             <!-- isLocal callout -->
-            <div class="glass-card rounded-xl p-6 border-l-4 border-amber-500/60 fade-up stagger-4">
-                <h3 class="font-semibold text-amber-400 mb-2">The isLocal Problem &mdash; Solved</h3>
+            <div class="mt-10 max-w-3xl glass-card rounded-xl p-6 border-l-4 border-amber-500/60 fade-up stagger-4">
+                <h3 class="font-semibold text-amber-400 mb-2">The isLocal Trap</h3>
                 <p class="text-gray-300 leading-relaxed text-sm">
-                    Agent Builder defaults actions to <code class="text-amber-300">isLocal=true</code>, so they run mocked instead of connected to real data, and you usually find that out at publish time after manual testing. The skill pipeline catches it earlier, previewing first with mocked actions to test routing, then switching to <code class="text-amber-300">--use-live-actions</code> to verify real data flows. Because the publish checkpoint requires a passing live-action preview, there are no more silent isLocal failures in production.
+                    Agent Builder defaults actions to <code class="text-amber-300">isLocal=true</code>, so they run mocked instead of connected to real data, and you usually find that out at publish time after a round of manual testing. The skill pipeline catches it earlier. It previews first with mocked actions to test routing, then switches to <code class="text-amber-300">--use-live-actions</code> to verify that real data flows, and the publish checkpoint won't clear until a live-action preview passes.
                 </p>
             </div>
-        </div>
-    </section>
 
-    <!-- Collaboration Model -->
-    <section class="py-24 px-6">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-xs font-semibold tracking-widest text-blue-400/70 uppercase mb-4 fade-up">The Workflow</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">How We Build Together</h2>
-            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
-                The SE describes what they want, and Claude builds it. Checkpoints gate every irreversible action, design and go/no-go decisions stay with the human, and construction and validation run autonomously.
+            <p class="mt-12 max-w-3xl text-lg text-gray-300 leading-relaxed fade-up">
+                The way we split the work is that the SE describes what they want and Claude builds it, with a checkpoint in front of every irreversible action. I'll say something like "build an agent for order status," the skill activates from context, and Claude generates, validates, and previews on its own, since construction and validation run autonomously. Then it stops so I can review and approve, because design and go/no-go decisions stay with the human, and only after I sign off does it publish, activate, and verify. The .agent file sits in git the whole time, so every change is diffable and reviewable.
             </p>
-
-            <!-- Flow diagram -->
-            <div class="glass-card rounded-xl p-8 mb-12 fade-up stagger-3">
-                <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-2 text-sm">
-                    <div class="bg-slate-700/60 rounded-lg px-5 py-4 text-center min-w-[150px]">
-                        <div class="text-blue-400 font-semibold mb-1">You Describe</div>
-                        <div class="text-gray-400 text-xs">"Build an agent for order status"</div>
-                    </div>
-                    <div class="text-gray-500 text-lg">&rarr;</div>
-                    <div class="bg-slate-700/60 rounded-lg px-5 py-4 text-center min-w-[150px]">
-                        <div class="text-purple-400 font-semibold mb-1">Skill Activates</div>
-                        <div class="text-gray-400 text-xs">Auto-trigger from context</div>
-                    </div>
-                    <div class="text-gray-500 text-lg">&rarr;</div>
-                    <div class="bg-slate-700/60 rounded-lg px-5 py-4 text-center min-w-[150px]">
-                        <div class="text-emerald-400 font-semibold mb-1">Claude Builds</div>
-                        <div class="text-gray-400 text-xs">Generate, validate, preview</div>
-                    </div>
-                    <div class="text-gray-500 text-lg">&rarr;</div>
-                    <div class="bg-amber-500/10 border border-amber-500/30 rounded-lg px-5 py-4 text-center min-w-[150px]">
-                        <div class="text-amber-400 font-semibold mb-1">Checkpoint</div>
-                        <div class="text-gray-400 text-xs">You review &amp; approve</div>
-                    </div>
-                    <div class="text-gray-500 text-lg">&rarr;</div>
-                    <div class="bg-slate-700/60 rounded-lg px-5 py-4 text-center min-w-[150px]">
-                        <div class="text-emerald-400 font-semibold mb-1">Claude Deploys</div>
-                        <div class="text-gray-400 text-xs">Publish, activate, verify</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Before / After -->
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass-card rounded-xl p-6 border-t-2 border-red-500/40 fade-up stagger-1">
-                    <h3 class="text-lg font-semibold text-red-400 mb-4">Before</h3>
-                    <ul class="text-sm text-gray-400 space-y-3">
-                        <li class="flex items-start gap-2"><span class="text-red-400">&#10005;</span> Manually wire each action in Agent Builder UI</li>
-                        <li class="flex items-start gap-2"><span class="text-red-400">&#10005;</span> Scan Apex classes by hand for @InvocableMethod</li>
-                        <li class="flex items-start gap-2"><span class="text-red-400">&#10005;</span> Map I/O parameters through trial and error</li>
-                        <li class="flex items-start gap-2"><span class="text-red-400">&#10005;</span> Discover isLocal issues at publish time</li>
-                        <li class="flex items-start gap-2"><span class="text-red-400">&#10005;</span> No version control for agent configuration</li>
-                        <li class="flex items-start gap-2"><span class="text-red-400">&#10005;</span> Debug through Setup UI logs</li>
-                    </ul>
-                </div>
-                <div class="glass-card rounded-xl p-6 border-t-2 border-emerald-500/40 fade-up stagger-2">
-                    <h3 class="text-lg font-semibold text-emerald-400 mb-4">After</h3>
-                    <ul class="text-sm text-gray-400 space-y-3">
-                        <li class="flex items-start gap-2"><span class="text-emerald-400">&#10003;</span> Skill auto-scans and binds all actions</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400">&#10003;</span> Automatic @InvocableMethod discovery + stub generation</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400">&#10003;</span> Type-safe I/O from skill reference docs</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400">&#10003;</span> Live-action preview required before publish</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400">&#10003;</span> .agent file in git &mdash; diffable, reviewable</li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-400">&#10003;</span> STDM trace analysis from Data Cloud</li>
-                    </ul>
-                </div>
-            </div>
         </div>
     </section>
 
     <!-- Playbooks -->
-    <section class="py-24 px-6 bg-slate-800/30">
+    <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="text-xs font-semibold tracking-widest text-emerald-400/70 uppercase mb-4 fade-up">The Playbooks</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">7 Development Playbooks</h2>
-            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
-                Every Salesforce development scenario maps to a skill sequence. Describe what you need, and the right skills activate automatically.
-            </p>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="skill-card glass-card rounded-xl p-5 fade-up stagger-1">
-                    <div class="text-xs text-amber-400 font-semibold mb-2">Playbook 1</div>
-                    <h3 class="font-semibold text-white mb-2">Build an Agentforce Agent</h3>
-                    <p class="text-xs text-gray-500 mb-3">Agent Spec &rarr; scan backing logic &rarr; generate stubs &rarr; validate &rarr; preview (mocked &rarr; live) &rarr; publish</p>
-                    <div class="font-mono text-xs text-gray-600">/developing-agentforce &rarr; /generating-apex &rarr; /testing-agentforce</div>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-5 fade-up stagger-2">
-                    <div class="text-xs text-blue-400 font-semibold mb-2">Playbook 2</div>
-                    <h3 class="font-semibold text-white mb-2">Write Apex Code</h3>
-                    <p class="text-xs text-gray-500 mb-3">3-phase workflow: Author &rarr; Validate (code analyzer + tests) &rarr; Report with scoring</p>
-                    <div class="font-mono text-xs text-gray-600">/generating-apex &rarr; /generating-apex-test</div>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-5 fade-up stagger-3">
-                    <div class="text-xs text-purple-400 font-semibold mb-2">Playbook 3</div>
-                    <h3 class="font-semibold text-white mb-2">Create Metadata</h3>
-                    <p class="text-xs text-gray-500 mb-3">Objects &rarr; fields &rarr; validation rules &rarr; pages &rarr; tabs &rarr; apps &rarr; permission sets</p>
-                    <div class="font-mono text-xs text-gray-600">/generating-lightning-app orchestrates all</div>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-5 fade-up stagger-4">
-                    <div class="text-xs text-emerald-400 font-semibold mb-2">Playbook 4</div>
-                    <h3 class="font-semibold text-white mb-2">Build React on Salesforce</h3>
-                    <p class="text-xs text-gray-500 mb-3">Scaffold &rarr; data access &rarr; features &rarr; Agentforce chat &rarr; deploy to Experience Site</p>
-                    <div class="font-mono text-xs text-gray-600">/building-ui-bundle-app orchestrates 10 skills</div>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-5 fade-up stagger-5">
-                    <div class="text-xs text-cyan-400 font-semibold mb-2">Playbook 5</div>
-                    <h3 class="font-semibold text-white mb-2">Data Cloud Pipeline</h3>
-                    <p class="text-xs text-gray-500 mb-3">Connect &rarr; prepare &rarr; harmonize (DMOs) &rarr; segment &rarr; activate &rarr; retrieve</p>
-                    <div class="font-mono text-xs text-gray-600">/sf-datacloud-* (7 skills, sf-* only)</div>
-                </div>
-                <div class="skill-card glass-card rounded-xl p-5 fade-up stagger-6">
-                    <div class="text-xs text-pink-400 font-semibold mb-2">Playbooks 6 &amp; 7</div>
-                    <h3 class="font-semibold text-white mb-2">Industries &amp; DevOps</h3>
-                    <p class="text-xs text-gray-500 mb-3">OmniStudio (OmniScripts, FlexCards, IPs) + deployment, org switching, architecture review</p>
-                    <div class="font-mono text-xs text-gray-600">/sf-industry-* + /sf-deploy + /switching-org</div>
-                </div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">The Playbooks</h2>
+            <div class="max-w-3xl space-y-6 text-lg text-gray-300 leading-relaxed">
+                <p class="fade-up stagger-2">
+                    Most Salesforce development work maps to one of seven skill sequences, and you don't have to pick them yourself, you describe what you need and the right skills activate. For an Agentforce agent it's <code class="text-amber-300 text-base">/developing-agentforce</code> into <code class="text-amber-300 text-base">/generating-apex</code> into <code class="text-amber-300 text-base">/testing-agentforce</code>, which takes you from the Agent Spec through scanning the backing logic, generating stubs, validating, previewing mocked and then live, and publishing. Writing Apex is shorter, <code class="text-blue-300 text-base">/generating-apex</code> and then <code class="text-blue-300 text-base">/generating-apex-test</code>, in a 3-phase workflow that authors the code, validates it with the code analyzer and tests, and reports back with a score.
+                </p>
+                <p class="fade-up stagger-3">
+                    For metadata, <code class="text-purple-300 text-base">/generating-lightning-app</code> orchestrates all of it, objects, fields, validation rules, pages, tabs, apps, and permission sets, in that order. React on Salesforce works the same way, with <code class="text-emerald-300 text-base">/building-ui-bundle-app</code> orchestrating 10 skills to scaffold the app, wire up data access, build features, add Agentforce chat, and deploy to an Experience Site. A Data Cloud pipeline (connect, prepare, harmonize into DMOs, segment, activate, retrieve) runs on the seven <code class="text-cyan-300 text-base">/sf-datacloud-*</code> skills, which exist only on the sf-* side. The last two playbooks, Industries and DevOps, pair <code class="text-pink-300 text-base">/sf-industry-*</code> for OmniStudio work (OmniScripts, FlexCards, IPs) with <code class="text-pink-300 text-base">/sf-deploy</code> and <code class="text-pink-300 text-base">/switching-org</code> for deployment, org switching, and architecture review.
+                </p>
             </div>
         </div>
     </section>
@@ -582,101 +321,68 @@
     <!-- Proof Point: Real Build -->
     <section class="py-24 px-6 bg-gradient-to-b from-slate-900/50 to-slate-800/30">
         <div class="max-w-6xl mx-auto">
-            <div class="text-xs font-semibold tracking-widest text-emerald-400/70 uppercase mb-4 fade-up">Proof Point</div>
             <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">The Meridian Agent Build</h2>
             <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-8 fade-up stagger-2">
-                A full 7-topic, 68-action Agentforce agent, built from scratch and published to a live org entirely through Agent Script CLI... while I was outside doing yard work.
+                The Meridian agent is a full 7-topic, 68-action Agentforce agent, and I built it from scratch and published it to a live org entirely through the Agent Script CLI... while I was outside doing yard work.
             </p>
             <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-3">
-                It didn't work on the first try, and honestly that's the part worth telling. Getting there took 6 iterations.
+                It took six iterations and about three hours, and the skills didn't get it right on the first try. Each failure came back early with an error I could act on, which training data alone had never given me, so I knocked out one wrong structure at a time until the sixth attempt published.
             </p>
 
             <!-- Timeline -->
             <div class="glass-card rounded-xl p-8 mb-12 fade-up stagger-4">
-                <h3 class="text-lg font-semibold text-white mb-6">The Iteration Chain</h3>
-                <div class="space-y-4 text-sm">
+                <div class="space-y-4 text-sm text-gray-300">
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 1</div>
                         <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-red-400">FAIL</span> &mdash; split the agent across multiple files, and the compiler came back with "Missing config/system/start_agent." <span class="text-gray-500">Agent Script wants one file per agent.</span></div>
+                        <div>I split the agent across multiple files, and the compiler came back with "Missing config/system/start_agent." Agent Script wants one file per agent.</div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 2</div>
                         <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-red-400">FAIL</span> &mdash; actions were referenced by name only, so the server threw "'action_name' is not defined." <span class="text-gray-500">Actions need real target definitions.</span></div>
+                        <div>The actions were referenced by name only, so the server threw "'action_name' is not defined," because actions need real target definitions.</div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 3</div>
                         <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-red-400">FAIL</span> &mdash; targets went inline in the reasoning block, and the server choked on "unexpected ://" <span class="text-gray-500">A topic has two levels, where the actions block defines the targets and the reasoning.actions block references them.</span></div>
+                        <div>I put the targets inline in the reasoning block and the server choked on "unexpected ://". A topic has two levels, where the actions block defines the targets and the reasoning.actions block references them.</div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 4</div>
                         <div class="w-2 h-2 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-red-400">FAIL</span> &mdash; moving it to a top-level actions block still got rejected by the server. <span class="text-gray-500">The actions block is per-topic, a sibling of reasoning rather than a global.</span></div>
+                        <div>Moving everything into a top-level actions block got rejected by the server too, since the actions block is per-topic and sits next to reasoning as a sibling.</div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 5</div>
                         <div class="w-2 h-2 rounded-full bg-amber-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-amber-400">CLOSE</span> &mdash; the structure was finally right, but the output schema mismatched, with Apex names colliding with Flow names. <span class="text-gray-500">Flows expose different I/O than Apex classes.</span></div>
+                        <div><span class="text-amber-400">Close.</span> The structure was finally right, but the output schema didn't match, with Apex names colliding with Flow names (Flows expose different I/O than Apex classes).</div>
                     </div>
                     <div class="flex gap-4 items-start">
                         <div class="w-20 text-right text-gray-500 font-mono shrink-0">Try 6</div>
                         <div class="w-2 h-2 rounded-full bg-emerald-400 mt-1.5 shrink-0"></div>
-                        <div><span class="text-emerald-400">SUCCESS</span> &mdash; parsing the flow XML for ground-truth schemas got it published and live in the org.</div>
+                        <div>Parsing the flow XML for ground-truth schemas got it published and live in the org.</div>
                     </div>
                 </div>
             </div>
 
             <!-- What unblocked it -->
-            <div class="grid md:grid-cols-2 gap-6 mb-12">
-                <div class="glass-card rounded-xl p-6 border-t-2 border-cyan-500 fade-up stagger-1">
-                    <h3 class="font-semibold text-cyan-400 mb-3">What Unblocked It</h3>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#8250;</span> <strong>Salesforce Docs MCP</strong> &mdash; searched live docs mid-session, found the canonical two-level pattern that no training data had</li>
-                        <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#8250;</span> <strong>sf agent validate</strong> &mdash; server compiler gave exact line numbers + "did you mean?" suggestions</li>
-                        <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#8250;</span> <strong>Flow XML parsing</strong> &mdash; extracted actual I/O schemas from 38 flow files programmatically</li>
-                        <li class="flex items-start gap-2"><span class="text-cyan-400 mt-0.5">&#8250;</span> <strong>Tooling API</strong> &mdash; deleted orphaned action, assigned permissions, queried metadata &mdash; all without opening a browser</li>
-                    </ul>
-                </div>
-                <div class="glass-card rounded-xl p-6 border-t-2 border-purple-500 fade-up stagger-2">
-                    <h3 class="font-semibold text-purple-400 mb-3">Skills + Tools Used</h3>
-                    <ul class="text-sm text-gray-400 space-y-2">
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">/sf-ai-agentscript</code> &mdash; DSL reference, validator, architecture patterns</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">/developing-agentforce</code> &mdash; metadata lifecycle, safety review</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">salesforce-docs MCP</code> &mdash; live doc search (the breakthrough)</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">sf agent validate/publish</code> &mdash; server-side compilation + deploy</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">sf data create record</code> &mdash; programmatic permission assignment</li>
-                        <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">&#8250;</span> <code class="text-purple-300 text-xs">sf api request rest</code> &mdash; Tooling API for orphan cleanup</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- The result -->
-            <div class="glass-card rounded-xl p-8 border border-emerald-500/20 bg-emerald-500/5 fade-up stagger-3">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center mb-6">
-                    <div><div class="text-3xl font-bold text-emerald-400">7</div><div class="text-xs text-gray-500 mt-1">Persona Topics</div></div>
-                    <div><div class="text-3xl font-bold text-cyan-400">68</div><div class="text-xs text-gray-500 mt-1">Actions Bound</div></div>
-                    <div><div class="text-3xl font-bold text-amber-400">6</div><div class="text-xs text-gray-500 mt-1">Iterations</div></div>
-                    <div><div class="text-3xl font-bold text-purple-400">~3 hrs</div><div class="text-xs text-gray-500 mt-1">Total Build Time</div></div>
-                </div>
-                <p class="text-gray-300 text-center text-sm">
-                    <strong>The Meridian Intelligence Agent</strong> &mdash; published to a live Salesforce org via <code class="text-emerald-300">sf agent publish authoring-bundle</code>. It's version-controlled in git, diffable and reproducible, and it needed no Agent Builder UI at all.
+            <div class="max-w-3xl space-y-6 text-lg text-gray-300 leading-relaxed mb-12">
+                <p class="fade-up stagger-1">
+                    A few tools did the unblocking. The Salesforce Docs MCP was the breakthrough, searching the live docs mid-session and finding the canonical two-level pattern that the model's training data didn't have. <code class="text-cyan-300 text-base">sf agent validate</code> ran the server compiler and gave me exact line numbers with "did you mean?" suggestions, and instead of guessing at the Flow I/O, I extracted the actual schemas from 38 flow files programmatically. The Tooling API handled the cleanup, deleting an orphaned action, assigning permissions, and querying metadata without my ever opening a browser.
                 </p>
-            </div>
-
-            <!-- Punchline -->
-            <div class="mt-12 text-center fade-up stagger-4">
-                <p class="text-lg text-gray-300 max-w-2xl mx-auto">
-                    The skills didn't write perfect code on the first try. What they did was catch errors early, give me feedback I could actually act on, and converge on the right answer through systematic elimination. <strong>That's what makes them better than training data alone.</strong>
+                <p class="text-base text-gray-400 fade-up stagger-2">
+                    The full set I used: <code class="text-purple-300 text-sm">/sf-ai-agentscript</code> for the DSL reference, validator, and architecture patterns, <code class="text-purple-300 text-sm">/developing-agentforce</code> for the metadata lifecycle and safety review, the <code class="text-purple-300 text-sm">salesforce-docs MCP</code> for live doc search, <code class="text-purple-300 text-sm">sf agent validate/publish</code> for server-side compilation and deploy, <code class="text-purple-300 text-sm">sf data create record</code> for programmatic permission assignment, and <code class="text-purple-300 text-sm">sf api request rest</code> to reach the Tooling API for the orphan cleanup.
+                </p>
+                <p class="fade-up stagger-3">
+                    What came out the other end is the Meridian Intelligence Agent, with 7 persona topics and 68 actions bound, published to a live Salesforce org with <code class="text-emerald-300 text-base">sf agent publish authoring-bundle</code>. It's version-controlled in git, diffable and reproducible, and it needed no Agent Builder UI at all.
                 </p>
             </div>
 
             <!-- Download the rule -->
             <div class="mt-12 glass-card rounded-xl p-8 border border-cyan-500/20 text-center fade-up stagger-5">
-                <h3 class="text-lg font-semibold text-white mb-3">Skip All 5 Failures</h3>
+                <h3 class="text-lg font-semibold text-white mb-3">Start From the Sixth Iteration</h3>
                 <p class="text-sm text-gray-400 mb-6 max-w-lg mx-auto">
-                    Download the Agent Script rules file. Drop it in <code class="text-cyan-300">~/.claude/rules/</code> and your Claude starts from our 6th iteration &mdash; the one that worked.
+                    You can skip all five failures. Download the Agent Script rules file, drop it in <code class="text-cyan-300">~/.claude/rules/</code>, and your Claude starts from our 6th iteration, the one that worked.
                 </p>
                 <a href="https://raw.githubusercontent.com/jtehrani84/claude-code-se-starter-kit/main/rules/agent-script.md"
                    download="agent-script.md"
@@ -694,57 +400,62 @@
     <!-- Getting Started -->
     <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="text-xs font-semibold tracking-widest text-blue-400/70 uppercase mb-4 fade-up">Get Started</div>
-            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Start Building in 3 Steps</h2>
-            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-12 fade-up stagger-2">
-                If you have Claude Code and the Salesforce CLI, you're 60 seconds from the full stack.
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up stagger-1">Setting Up the Stack</h2>
+            <p class="text-lg text-gray-300 leading-relaxed max-w-3xl mb-10 fade-up stagger-2">
+                If you have Claude Code and the Salesforce CLI, you're about 60 seconds from the full stack.
             </p>
 
             <!-- Agentforce Labs callout -->
-            <div class="glass-card rounded-xl p-6 mb-10 border border-emerald-500/20 fade-up stagger-1">
+            <div class="glass-card rounded-xl p-6 mb-10 max-w-3xl border border-emerald-500/20 fade-up stagger-1">
                 <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
                     <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
                         <span class="text-emerald-400 text-lg">&#9889;</span>
                     </div>
                     <div class="flex-1">
-                        <h3 class="font-semibold text-white mb-1">A new zero-friction option</h3>
-                        <p class="text-sm text-gray-300"><a href="https://labs.agentforce.com" target="_blank" rel="noopener" class="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2">labs.agentforce.com</a> gives you instant headless access to Agentforce from Claude Code, Codex, Cursor, or Vibes &mdash; no org provisioning, no setup screens. Connect and start building in minutes.</p>
+                        <h3 class="font-semibold text-white mb-1">A Zero-Friction Option</h3>
+                        <p class="text-sm text-gray-300"><a href="https://labs.agentforce.com" target="_blank" rel="noopener" class="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2">labs.agentforce.com</a> gives you instant headless access to Agentforce from Claude Code, Codex, Cursor, or Vibes, with no org provisioning and no setup screens, so you can connect and start building in minutes.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="glass-card rounded-xl p-6 fade-up stagger-2">
-                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4">
+            <ol class="max-w-3xl space-y-8">
+                <li class="flex gap-4 fade-up stagger-2">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
                         <span class="text-lg font-bold text-blue-400">1</span>
                     </div>
-                    <h3 class="font-semibold text-white mb-2">Install the skills</h3>
-                    <div class="code-block p-3 text-xs text-gray-300 mt-3">
-                        npx skills add forcedotcom/afv-library --yes
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-semibold text-white mb-2">Install the Skills</h3>
+                        <div class="code-block p-3 text-xs text-gray-300">
+                            npx skills add forcedotcom/afv-library --yes
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">This installs the official Salesforce skills (30 when I set it up) in under 30 seconds. Run it again every month or so to pick up whatever's been added.</p>
                     </div>
-                    <p class="text-xs text-gray-500 mt-3">30 official Salesforce skills installed in under 30 seconds. Run monthly to pick up new skills.</p>
-                </div>
-                <div class="glass-card rounded-xl p-6 fade-up stagger-2">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
+                </li>
+                <li class="flex gap-4 fade-up stagger-2">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
                         <span class="text-lg font-bold text-purple-400">2</span>
                     </div>
-                    <h3 class="font-semibold text-white mb-2">Connect your org</h3>
-                    <div class="code-block p-3 text-xs text-gray-300 mt-3">
-                        /switching-org
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-semibold text-white mb-2">Connect Your Org</h3>
+                        <div class="code-block p-3 text-xs text-gray-300">
+                            /switching-org
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">That points Claude at your Salesforce org, and any skill that needs org access, like preview, deploy, or test, uses the connection.</p>
                     </div>
-                    <p class="text-xs text-gray-500 mt-3">Point Claude at your Salesforce org. Skills that need org access (preview, deploy, test) will use this connection.</p>
-                </div>
-                <div class="glass-card rounded-xl p-6 fade-up stagger-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+                </li>
+                <li class="flex gap-4 fade-up stagger-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
                         <span class="text-lg font-bold text-emerald-400">3</span>
                     </div>
-                    <h3 class="font-semibold text-white mb-2">Describe what you need</h3>
-                    <div class="code-block p-3 text-xs text-gray-300 mt-3">
-                        "Build an agent topic for order status lookup"
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-semibold text-white mb-2">Describe What You Need</h3>
+                        <div class="code-block p-3 text-xs text-gray-300">
+                            "Build an agent topic for order status lookup"
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">Skills trigger on their own based on context, so there's no need to memorize commands.</p>
                     </div>
-                    <p class="text-xs text-gray-500 mt-3">Skills auto-trigger based on context. No need to memorize commands &mdash; just describe your intent.</p>
-                </div>
-            </div>
+                </li>
+            </ol>
         </div>
     </section>
 
@@ -758,7 +469,7 @@
                     </div>
                     <div>
                         <p class="text-sm text-gray-300 leading-relaxed">
-                            <span class="font-semibold text-white">Salesforce colleagues</span>, there's an internal Slack canvas with the full toolkit &mdash; Agentforce Labs access, ADLC plugin, ADL Data Libraries, Custom Scorers, and Custom Connections skills. Search <span class="font-mono text-xs text-blue-300">"Build Fast with Coding Agents"</span> in Slack or ask your CKO channel.
+                            <span class="font-semibold text-white">Salesforce colleagues</span>, there's an internal Slack canvas with the full toolkit, including Agentforce Labs access, the ADLC plugin, ADL Data Libraries, Custom Scorers, and Custom Connections skills. Search <span class="font-mono text-xs text-blue-300">"Build Fast with Coding Agents"</span> in Slack or ask your CKO channel.
                         </p>
                     </div>
                 </div>
@@ -811,7 +522,7 @@
                    class="glass-card rounded-xl p-5 hover:border-blue-500/30 transition-all duration-200 fade-up stagger-1 group">
                     <div class="text-xs text-gray-500 mb-2">Part 6</div>
                     <h3 class="font-semibold text-gray-300 group-hover:text-white transition-colors text-sm mb-1">Operating System</h3>
-                    <p class="text-xs text-gray-500">One system, not a pile of files</p>
+                    <p class="text-xs text-gray-500">When the files act as one system</p>
                     <div class="mt-3 text-xs text-emerald-400">Complete &rarr;</div>
                 </a>
                 <a href="https://jtehrani84.github.io/context-engineering-part-7/" target="_blank" rel="noopener"
@@ -845,7 +556,7 @@
             </div>
 
             <p class="text-sm text-gray-400 mt-10 fade-up">
-                Skills gave Claude a way to build. Next up, Part 6 asks what happens when all of this stops being a pile of files and starts behaving like one system &mdash;
+                Part 6 asks what happens when all these files start behaving like one system:
                 <a href="https://jtehrani84.github.io/claude-context-architecture/from-memory-to-operating-system.html" class="text-purple-400 hover:text-purple-300 font-semibold underline underline-offset-2">From Memory to an Operating System &rarr;</a>
             </p>
         </div>
